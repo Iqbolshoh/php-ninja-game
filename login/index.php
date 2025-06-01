@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             <div class="col-md-6 col-lg-4">
                 <div class="card shadow">
                     <div class="card-body p-4">
-                        <h2 class="text-center mb-4">Login to the System</h2>
+                        <h2 class="text-center mb-4">Login</h2>
                         <form id="loginForm" method="POST">
                             <input type="hidden" name="csrf_token"
                                 value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
