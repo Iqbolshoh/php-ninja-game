@@ -147,46 +147,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="col-md-6 col-lg-4">
                 <div class="card shadow">
                     <div class="card-body p-4">
-                        <h2 class="text-center mb-4">Create Account</h2>
+                        <h2 class="text-center mb-4">Sign Up</h2>
                         <form id="signupForm" method="POST">
                             <input type="hidden" name="csrf_token"
                                 value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+
                             <div class="mb-3">
                                 <label for="name" class="form-label">Full Name</label>
                                 <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="Enter your full name (max 100 characters)" maxlength="100" required>
+                                    placeholder="Enter your full name" maxlength="100">
                             </div>
+
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
                                 <input type="text" class="form-control" id="username" name="username"
-                                    placeholder="Choose a username (3-30 characters, a-z, 0-9, _)"
-                                    pattern="[a-z0-9_]{3,30}"
-                                    title="Username must be 3-30 characters and contain only lowercase letters, numbers, or underscores"
-                                    required>
+                                    placeholder="Choose a username">
                             </div>
+
                             <div class="mb-3 position-relative">
                                 <label for="password" class="form-label">Password</label>
                                 <div class="input-group">
                                     <input type="password" id="password" class="form-control" name="password"
-                                        placeholder="Create a password (min 8 characters)" minlength="8" required>
+                                        placeholder="Create a password">
                                     <button class="btn btn-outline-secondary password-toggle" type="button"
                                         onclick="togglePassword('password')">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </div>
                             </div>
+
                             <div class="mb-3 position-relative">
                                 <label for="confirm_password" class="form-label">Confirm Password</label>
                                 <div class="input-group">
                                     <input type="password" id="confirm_password" class="form-control"
-                                        name="confirm_password" placeholder="Re-enter your password" minlength="8"
-                                        required>
+                                        name="confirm_password" placeholder="Re-enter your password">
                                     <button class="btn btn-outline-secondary password-toggle" type="button"
                                         onclick="togglePassword('confirm_password')">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </div>
                             </div>
+
                             <button type="submit" class="btn btn-primary w-100">Sign Up</button>
                         </form>
                         <?php

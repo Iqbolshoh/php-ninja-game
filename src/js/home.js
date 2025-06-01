@@ -22,7 +22,7 @@ function generateGameLink() {
     const createBtn = document.getElementById('createBtn');
     const gameId = Math.random().toString(36).substring(2, 18);
     const timestamp = Date.now();
-    const gameLink = `${window.location.origin}/game/?link=${gameId}-${timestamp.toString().slice(-10)}`;
+    const gameLink = `${window.location.href.replace(/\/$/, '')}/game/?link=${gameId}-${timestamp.toString().slice(-10)}`;
 
     const formData = new URLSearchParams();
     formData.append('link', gameLink);

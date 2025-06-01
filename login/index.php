@@ -126,29 +126,29 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             <div class="col-md-6 col-lg-4">
                 <div class="card shadow">
                     <div class="card-body p-4">
-                        <h2 class="text-center mb-4">Login</h2>
+                        <h2 class="text-center mb-4">Login to the System</h2>
                         <form id="loginForm" method="POST">
                             <input type="hidden" name="csrf_token"
                                 value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
                                 <input type="text" class="form-control" name="username" id="username"
-                                    placeholder="Enter your username (3-30 characters, a-z, 0-9, _)"
-                                    pattern="[a-z0-9_]{3,30}"
-                                    title="Username must be 3-30 characters and contain only lowercase letters, numbers, or underscores"
-                                    required>
+                                    placeholder="Enter your username">
                             </div>
+
                             <div class="mb-3 position-relative">
                                 <label for="password" class="form-label">Password</label>
                                 <div class="input-group">
                                     <input type="password" id="password" class="form-control" name="password"
-                                        placeholder="Enter your password (min 8 characters)" minlength="8" required>
+                                        placeholder="Enter your password">
                                     <button class="btn btn-outline-secondary password-toggle" type="button"
                                         onclick="togglePassword('password')">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </div>
                             </div>
+
                             <button type="submit" class="btn btn-primary w-100">Login</button>
                         </form>
                         <?php
