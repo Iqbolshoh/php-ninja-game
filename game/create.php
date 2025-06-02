@@ -19,27 +19,32 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $user_id = $_SESSION['user']['id'];
-$id = $_POST['id'] ?? null;
+$link = $_POST['link'] ?? '';
+$created_at = date('Y-m-d H:i:s');
 
-if (!$id) {
+if (empty($link)) {
     echo json_encode([
         'success' => false,
-        'message' => 'ID is required'
+        'message' => 'Link is required'
     ]);
     exit;
 }
 
-$deleted = $db->delete('games', 'id = ? AND user_id = ?', [$id, $user_id], 'ii');
+$inserted = $db->insert('games', [
+    'user_id' => $user_id,
+    'link' => $link,
+    'created_at' => $created_at
+]);
 
-if ($deleted) {
+if ($inserted) {
     echo json_encode([
         'success' => true,
-        'message' => 'Game link deleted successfully'
+        'message' => 'Game successfully created'
     ]);
 } else {
     echo json_encode([
         'success' => false,
-        'message' => 'Error occurred while deleting. Please try again'
+        'message' => 'Database write error'
     ]);
 }
 exit;
