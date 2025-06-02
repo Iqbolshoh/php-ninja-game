@@ -13,38 +13,33 @@ $db = new Database();
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode([
         'success' => false,
-        'message' => 'Faqat POST usuli qo‘llaniladi'
+        'message' => 'Only POST method is allowed'
     ]);
     exit;
 }
 
 $user_id = $_SESSION['user']['id'];
-$link = $_POST['link'] ?? '';
-$created_at = date('Y-m-d H:i:s');
+$id = $_POST['id'] ?? null;
 
-if (empty($link)) {
+if (!$id) {
     echo json_encode([
         'success' => false,
-        'message' => 'Havola majburiy'
+        'message' => 'ID is required'
     ]);
     exit;
 }
 
-$inserted = $db->insert('games', [
-    'user_id' => $user_id,
-    'link' => $link,
-    'created_at' => $created_at
-]);
+$deleted = $db->delete('games', 'id = ? AND user_id = ?', [$id, $user_id], 'ii');
 
-if ($inserted) {
+if ($deleted) {
     echo json_encode([
         'success' => true,
-        'message' => 'O‘yin muvaffaqiyatli yaratildi'
+        'message' => 'Game link deleted successfully'
     ]);
 } else {
     echo json_encode([
         'success' => false,
-        'message' => 'Bazaga yozishda xatolik'
+        'message' => 'Error occurred while deleting. Please try again'
     ]);
 }
 exit;
