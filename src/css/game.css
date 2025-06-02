@@ -1,0 +1,320 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+body {
+  cursor: pointer;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  position: relative;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+  }
+
+  to {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px 5px rgba(255, 215, 0, 0);
+  }
+}
+
+#introduction {
+  width: 80%;
+  max-width: 250px;
+  height: auto;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 600;
+  font-size: 1em;
+  text-align: center;
+  transition: opacity 2s;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+}
+
+#restart {
+  width: 60%;
+  max-width: 200px;
+  height: 50px;
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 10px;
+  color: white;
+  background-color: red;
+  border: none;
+  font-weight: 700;
+  font-size: 1.2em;
+  display: none;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#restart:hover,
+#restart:focus {
+  background-color: darkred;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+}
+
+#perfect {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 2s;
+}
+
+.home-a {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-family: 'Arial', sans-serif;
+  font-size: 1.2em;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  padding: 10px 15px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.leaderboard-button {
+  position: absolute;
+  top: 80px;
+  left: 20px;
+  font-family: 'Arial', sans-serif;
+  font-size: 1.2em;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  padding: 10px 15px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  z-index: 100;
+}
+
+#score {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-family: 'Arial', sans-serif;
+  font-size: 1.2em;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  padding: 10px 15px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+}
+
+#time {
+  position: absolute;
+  top: 80px;
+  right: 20px;
+  font-family: 'Arial', sans-serif;
+  font-size: 1.2em;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  padding: 10px 15px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.home-a::before {
+  content: "🏠 ";
+}
+
+.leaderboard-button::before {
+  content: "🏆 ";
+}
+
+#score::before {
+  content: "★ ";
+  color: #FFD700;
+}
+
+#time::before {
+  content: "⏱ ";
+  color: #00BFFF;
+}
+
+.leaderboard-button:hover,
+.home-a:hover,
+#score:hover,
+#time:hover {
+  background: rgba(30, 30, 30, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+
+
+.score-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 200;
+  justify-content: center;
+  align-items: center;
+}
+
+.score-modal-content {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80%;
+  overflow-y: auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.score-modal-content h2 {
+  font-family: 'Arial', sans-serif;
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+.score-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Arial', sans-serif;
+}
+
+.score-table th,
+.score-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.score-table td:nth-child(3) {
+  font-weight: bold;
+  color: #b357f4;
+}
+
+.score-table th {
+  background: #6A0DAD;
+  color: #fff;
+  font-weight: 700;
+}
+
+.score-table tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.score-table tr:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5em;
+  color: #333;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+@media (max-width: 768px) {
+  #restart {
+    font-size: 1em;
+    height: 45px;
+  }
+
+  #introduction {
+    font-size: 0.9em;
+    padding: 10px;
+  }
+
+  .leaderboard-button,
+  .home-a,
+  #score,
+  #time {
+    font-size: 1em;
+    padding: 8px 12px;
+  }
+
+  .score-modal-content {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .score-table th,
+  .score-table td {
+    padding: 8px;
+    font-size: 0.9em;
+  }
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 1.8em;
+  color: #333;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.close-modal:hover {
+  background: #ff4d4d;
+  color: #fff;
+  transform: rotate(90deg);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.close-modal:focus {
+  outline: none;
+  background: #ff4d4d;
+  color: #fff;
+}

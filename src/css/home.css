@@ -1,0 +1,540 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(145deg, #1a1f21, #2c3538, #080b0e);
+    color: #e0e0e0;
+    min-height: 100vh;
+    margin: 0;
+    padding: 15px;
+    overflow-x: hidden;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 0, 0, 0.2) 1.5%, transparent 1.6%);
+    background-size: 20px 20px;
+    opacity: 0.25;
+    animation: starPulse 15s linear infinite;
+    z-index: -1;
+}
+
+@keyframes starPulse {
+    0% {
+        background-position: 0 0;
+        opacity: 0.25;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+
+    100% {
+        background-position: 150px 150px;
+        opacity: 0.25;
+    }
+}
+
+body::after {
+    content: '\f0c4';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(0deg);
+    color: rgba(255, 0, 0, 0.15);
+    font-size: 100px;
+    opacity: 0;
+    animation: shurikenPulse 12s linear infinite;
+    z-index: -2;
+}
+
+@keyframes shurikenPulse {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    }
+
+    50% {
+        opacity: 0.2;
+        transform: translate(-50%, -50%) rotate(180deg) scale(1.1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(360deg) scale(1);
+    }
+}
+
+header {
+    background: rgba(10, 14, 17, 0.95);
+    padding: 15px 25px;
+    box-shadow: 0 2px 10px rgba(255, 0, 0, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+header h1 {
+    color: #ff0000;
+    font-size: 2em;
+    text-shadow: 0 0 12px rgba(255, 0, 0, 0.9), 0 0 24px rgba(255, 0, 0, 0.5);
+    animation: neonGlow 2.5s ease-in-out infinite alternate;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+@keyframes neonGlow {
+    from {
+        text-shadow: 0 0 12px rgba(255, 0, 0, 0.9), 0 0 24px rgba(255, 0, 0, 0.5);
+    }
+
+    to {
+        text-shadow: 0 0 18px rgba(255, 0, 0, 1), 0 0 36px rgba(255, 0, 0, 0.7);
+    }
+}
+
+.container {
+    max-width: 900px;
+    width: 100%;
+    margin: 20px auto;
+    background: rgba(10, 14, 17, 0.92);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.7), 0 0 60px rgba(255, 0, 0, 0.35);
+    backdrop-filter: blur(15px);
+    text-align: center;
+    animation: slideIn 0.8s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.btn {
+    background: linear-gradient(45deg, #ff0000, #c62828);
+    color: #fff;
+    border: none;
+    padding: 10px 25px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6), inset 0 2px 0 rgba(255, 255, 255, 0.25);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    transition: left 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 0, 0, 0.8), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+    background: linear-gradient(45deg, #e53935, #c62828);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-danger {
+    background: linear-gradient(45deg, #c62828, #e53935);
+}
+
+.btn-danger:hover {
+    background: linear-gradient(45deg, #b71c1c, #d32f2f);
+    box-shadow: 0 8px 20px rgba(198, 40, 40, 0.8), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+}
+
+#my-games {
+    margin-top: 25px;
+    padding: 20px;
+    background: linear-gradient(45deg, rgba(0, 0, 0, 0.9), rgba(40, 40, 40, 0.9));
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    width: 100%;
+    max-height: 400px;
+    overflow-y: auto;
+    animation: fadeInGames 1.2s ease-out;
+}
+
+@keyframes fadeInGames {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.game-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    margin-bottom: 12px;
+    background: rgba(15, 15, 15, 0.95);
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(255, 0, 0, 0.5), 0 0 0 2px rgba(255, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+    animation: glowBorder 2s infinite alternate;
+}
+
+@keyframes glowBorder {
+    from {
+        box-shadow: 0 5px 20px rgba(255, 0, 0, 0.5), 0 0 0 2px rgba(255, 0, 0, 0.3);
+    }
+
+    to {
+        box-shadow: 0 5px 25px rgba(255, 0, 0, 0.7), 0 0 0 3px rgba(255, 0, 0, 0.5);
+    }
+}
+
+.game-item.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.game-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(255, 0, 0, 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.game-item:hover::before {
+    opacity: 1;
+}
+
+.game-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(255, 0, 0, 0.8), 0 0 0 3px rgba(255, 0, 0, 0.6);
+}
+
+.game-info {
+    flex: 1;
+    text-align: left;
+    padding-right: 15px;
+    overflow: hidden;
+}
+
+.game-link {
+    color: #ff5252;
+    font-size: 0.95em;
+    font-weight: 500;
+    word-break: break-word;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 8px;
+    transition: color 0.3s ease;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+.game-link:hover {
+    color: #ff8a80;
+    text-decoration: underline;
+}
+
+.game-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.85em;
+    color: #b0bec5;
+    flex-wrap: wrap;
+}
+
+.game-time {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-style: italic;
+    white-space: nowrap;
+}
+
+.game-players {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255, 0, 0, 0.3);
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    animation: pulseBadge 1.5s ease-in-out infinite;
+    white-space: nowrap;
+}
+
+@keyframes pulseBadge {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.game-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.btn-small {
+    padding: 7px 14px;
+    font-size: 0.9em;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    min-width: 80px;
+    text-align: center;
+}
+
+.btn-small:hover {
+    transform: scale(1.1);
+}
+
+.particle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #ff5252;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: particleBurst 0.6s ease-out forwards;
+}
+
+@keyframes particleBurst {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+.btn:hover .icon {
+    transform: rotate(360deg);
+    transition: transform 0.5s ease;
+}
+
+#my-games::-webkit-scrollbar {
+    width: 8px;
+}
+
+#my-games::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#my-games::-webkit-scrollbar-thumb {
+    background: #ff5252;
+    border-radius: 4px;
+}
+
+#my-games::-webkit-scrollbar-thumb:hover {
+    background: #e53935;
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 10px 15px;
+    }
+
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    .container {
+        padding: 15px;
+        margin: 10px auto;
+    }
+
+    .btn {
+        padding: 8px 20px;
+        font-size: 0.95em;
+    }
+
+    .game-item {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 12px;
+        margin-bottom: 10px;
+    }
+
+    .game-info {
+        padding-right: 0;
+        margin-bottom: 12px;
+    }
+
+    .game-link {
+        font-size: 0.9em;
+        line-height: 1.4;
+    }
+
+    .game-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .game-time,
+    .game-players {
+        font-size: 0.8em;
+        padding: 3px 8px;
+    }
+
+    .game-actions {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .btn-small {
+        flex: 1;
+        padding: 6px 10px;
+        font-size: 0.85em;
+        min-width: 0;
+    }
+
+    body::after {
+        font-size: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    header {
+        padding: 8px 10px;
+    }
+
+    header h1 {
+        font-size: 1.6em;
+    }
+
+    .container {
+        padding: 12px;
+    }
+
+    .btn {
+        padding: 7px 15px;
+        font-size: 0.9em;
+    }
+
+    .game-item {
+        padding: 10px;
+    }
+
+    .game-link {
+        font-size: 0.85em;
+        line-height: 1.5;
+    }
+
+    .game-time,
+    .game-players {
+        font-size: 0.75em;
+        padding: 2px 6px;
+    }
+
+    .btn-small {
+        padding: 5px 8px;
+        font-size: 0.8em;
+    }
+
+    body::after {
+        font-size: 60px;
+    }
+}
+
+@media (max-width: 320px) {
+    header {
+        padding: 6px 8px;
+    }
+
+    header h1 {
+        font-size: 1.4em;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    .game-link {
+        font-size: 0.8em;
+    }
+
+    .game-time,
+    .game-players {
+        font-size: 0.7em;
+    }
+
+    .btn-small {
+        padding: 4px 6px;
+        font-size: 0.75em;
+    }
+}

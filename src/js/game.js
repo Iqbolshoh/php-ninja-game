@@ -1,12 +1,14 @@
 Array.prototype.last = function () {
     return this[this.length - 1];
 };
+
 Math.sinus = function (degree) {
     return Math.sin((degree / 180) * Math.PI);
 };
+
 let gameStartTime;
 let playedSeconds = 0;
-let phase = "waiting";
+let phase = "kutilmoqda";
 let lastTimestamp;
 let heroX;
 let heroY;
@@ -15,6 +17,7 @@ let platforms = [];
 let sticks = [];
 let trees = [];
 let score = 0;
+
 const canvasWidth = 375;
 const canvasHeight = 375;
 const platformHeight = 100;
@@ -35,6 +38,7 @@ const transitioningSpeed = 2;
 const fallingSpeed = 2;
 const heroWidth = 17;
 const heroHeight = 30;
+
 const canvas = document.getElementById("game");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -44,18 +48,24 @@ const perfectElement = document.getElementById("perfect");
 const restartButton = document.getElementById("restart");
 const scoreElement = document.getElementById("score");
 const timeElement = document.getElementById("time");
+const leaderboardButton = document.getElementById("leaderboard-button");
+const homeA = document.getElementById("home-a");
+const scoreModal = document.getElementById("score-modal");
+const closeModal = document.getElementById("close-modal");
+const scoreTableBody = document.getElementById("score-table-body");
 
 function resetGame() {
-    phase = "waiting";
+    phase = "kutilmoqda";
     lastTimestamp = undefined;
     sceneOffset = 0;
     score = 0;
-    gameStartTime = Date.now();
+    playedSeconds = 0;
+    gameStartTime = undefined;
     introductionElement.style.opacity = 1;
     perfectElement.style.opacity = 0;
     restartButton.style.display = "none";
-    scoreElement.innerText = `Score: ${score}`;
-    timeElement.innerText = `Time: 0s`;
+    scoreElement.innerText = `Ball: ${score}`;
+    timeElement.innerText = `Vaqt: 0s`;
     platforms = [{ x: 50, w: 50 }];
     generatePlatform();
     generatePlatform();
@@ -81,12 +91,9 @@ function resetGame() {
 function generateTree() {
     const minimumGap = 30;
     const maximumGap = 150;
-    const lastTree = trees[trees.length - 1];
+    const lastTree = trees.last();
     let furthestX = lastTree ? lastTree.x : 0;
-    const x =
-        furthestX +
-        minimumGap +
-        Math.floor(Math.random() * (maximumGap - minimumGap));
+    const x = furthestX + minimumGap + Math.floor(Math.random() * (maximumGap - minimumGap));
     const treeColors = ["#6D8821", "#8FAC34", "#98B333"];
     const color = treeColors[Math.floor(Math.random() * 3)];
     trees.push({ x, color });
@@ -97,85 +104,155 @@ function generatePlatform() {
     const maximumGap = 200;
     const minimumWidth = 20;
     const maximumWidth = 100;
-    const lastPlatform = platforms[platforms.length - 1];
+    const lastPlatform = platforms.last();
     let furthestX = lastPlatform.x + lastPlatform.w;
-    const x =
-        furthestX +
-        minimumGap +
-        Math.floor(Math.random() * (maximumGap - minimumGap));
-    const w =
-        minimumWidth + Math.floor(Math.random() * (maximumWidth - minimumWidth));
+    const x = furthestX + minimumGap + Math.floor(Math.random() * (maximumGap - minimumGap));
+    const w = minimumWidth + Math.floor(Math.random() * (maximumWidth - minimumWidth));
     platforms.push({ x, w });
 }
 
 function saveScore() {
+    if (!gameStartTime) return;
     const gameEndTime = Date.now();
     playedSeconds = Math.floor((gameEndTime - gameStartTime) / 1000);
-    timeElement.innerText = `Time: ${playedSeconds}s`;
-
-    fetch('../score_update.php', {
+    timeElement.innerText = `Vaqt: ${playedSeconds}s`;
+    fetch('./score_update.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `score=${score}&played_seconds=${playedSeconds}`
+        body: `score=${score}&played_seconds=${playedSeconds}&game_id=${game_id}`
     })
+        .then(res => res.json())
+        .catch(err => console.error(err));
+}
+
+function fetchScores() {
+    fetch('./get_scores.php?game_id=' + game_id)
         .then(response => response.json())
-        .then(data => {
-            console.log(data.message);
+        .then(scores => {
+            scores.sort((a, b) => {
+                if (b.score !== a.score) {
+                    return b.score - a.score;
+                }
+                return a.played_seconds - b.played_seconds;
+            });
+
+            scoreTableBody.innerHTML = '';
+
+            let currentRank = 0;
+            let lastScore = null;
+            let lastTime = null;
+            let sameRankCount = 0;
+
+            scores.forEach(function (score, index) {
+                if (score.score === lastScore && score.played_seconds === lastTime) {
+                    sameRankCount++;
+                } else {
+                    currentRank = index + 1;
+                    sameRankCount = 1;
+                    lastScore = score.score;
+                    lastTime = score.played_seconds;
+                }
+
+                const row = document.createElement('tr');
+                if (score.username === myUsername) {
+                    row.style.backgroundColor = 'rgba(0, 255, 0, 0.3)';
+                    row.style.fontWeight = 'bold';
+                }
+
+                row.innerHTML = `
+                    <td>${currentRank}</td>
+                    <td>${score.name}</td>
+                    <td>${score.username}</td>
+                    <td>${score.score}</td>
+                    <td>${score.played_seconds}</td>
+                `;
+                scoreTableBody.appendChild(row);
+            });
         })
-        .catch(error => {
-            console.error('Error saving score:', error);
+        .catch(function (err) {
+            console.error('Ballarni olishda xato:', err);
+            scoreTableBody.innerHTML = '<tr><td colspan="5">Ballarni yuklashda xato yuz berdi</td></tr>';
         });
 }
 
-resetGame();
+leaderboardButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    scoreModal.style.display = 'flex';
+    fetchScores();
+});
+
+closeModal.addEventListener('click', () => {
+    scoreModal.style.display = 'none';
+});
+
+scoreModal.addEventListener('click', (e) => {
+    if (e.target === scoreModal) {
+        scoreModal.style.display = 'none';
+    }
+});
 
 window.addEventListener("keydown", function (event) {
-    if (event.key == " ") {
+    if (event.key === " ") {
         event.preventDefault();
         resetGame();
-        return;
     }
 });
 
 window.addEventListener("mousedown", function (event) {
-    if (phase == "waiting") {
+    const excludedElements = [homeA, timeElement, scoreElement, leaderboardButton];
+
+    if (
+        phase === "kutilmoqda" &&
+        !excludedElements.includes(event.target) &&
+        !scoreModal.contains(event.target)
+    ) {
+        if (!gameStartTime) {
+            gameStartTime = Date.now();
+        }
         lastTimestamp = undefined;
         introductionElement.style.opacity = 0;
-        phase = "stretching";
+        phase = "cho‘zish";
         window.requestAnimationFrame(animate);
     }
 });
 
 window.addEventListener("mouseup", function (event) {
-    if (phase == "stretching") {
-        phase = "turning";
+    if (phase === "cho‘zish") {
+        phase = "burilish";
     }
 });
 
-window.addEventListener("resize", function (event) {
+window.addEventListener("resize", function () {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     draw();
 });
 
 window.addEventListener("touchstart", function (event) {
-    if (phase == "waiting") {
+    if (phase === "kutilmoqda" && event.target !== leaderboardButton && !scoreModal.contains(event.target)) {
+        if (!gameStartTime) {
+            gameStartTime = Date.now();
+        }
         lastTimestamp = undefined;
         introductionElement.style.opacity = 0;
-        phase = "stretching";
+        phase = "cho‘zish";
         window.requestAnimationFrame(animate);
     }
 });
 
 window.addEventListener("touchend", function (event) {
-    if (phase == "stretching") {
-        phase = "turning";
+    if (phase === "cho‘zish") {
+        phase = "burilish";
     }
 });
 
-window.requestAnimationFrame(animate);
+restartButton.addEventListener("click", function (event) {
+    event.preventDefault();
+    resetGame();
+    restartButton.style.display = "none";
+});
 
 function animate(timestamp) {
     if (!lastTimestamp) {
@@ -183,28 +260,26 @@ function animate(timestamp) {
         window.requestAnimationFrame(animate);
         return;
     }
-    if (phase !== "waiting" && phase !== "falling") {
-        const currentTime = Math.floor((Date.now() - gameStartTime) / 1000);
-        if (currentTime !== playedSeconds) {
-            playedSeconds = currentTime;
-            timeElement.innerText = `Time: ${playedSeconds}s`;
-        }
+
+    if (gameStartTime && phase !== "kutilmoqda") {
+        playedSeconds = Math.floor((Date.now() - gameStartTime) / 1000);
+        timeElement.innerText = `Vaqt: ${playedSeconds}s`;
     }
+
     switch (phase) {
-        case "waiting":
+        case "kutilmoqda":
             return;
-        case "stretching": {
+        case "cho‘zish":
             sticks.last().length += (timestamp - lastTimestamp) / stretchingSpeed;
             break;
-        }
-        case "turning": {
+        case "burilish":
             sticks.last().rotation += (timestamp - lastTimestamp) / turningSpeed;
             if (sticks.last().rotation > 90) {
                 sticks.last().rotation = 90;
                 const [nextPlatform, perfectHit] = thePlatformTheStickHits();
                 if (nextPlatform) {
                     score += perfectHit ? 2 : 1;
-                    scoreElement.innerText = score;
+                    scoreElement.innerText = `Ball: ${score}`;
                     if (perfectHit) {
                         perfectElement.style.opacity = 1;
                         setTimeout(() => (perfectElement.style.opacity = 0), 1000);
@@ -213,77 +288,74 @@ function animate(timestamp) {
                     generateTree();
                     generateTree();
                 }
-                phase = "walking";
+                phase = "yurish";
             }
             break;
-        }
-        case "walking": {
+        case "yurish":
             heroX += (timestamp - lastTimestamp) / walkingSpeed;
             const [nextPlatform] = thePlatformTheStickHits();
             if (nextPlatform) {
                 const maxHeroX = nextPlatform.x + nextPlatform.w - heroDistanceFromEdge;
                 if (heroX > maxHeroX) {
                     heroX = maxHeroX;
-                    phase = "transitioning";
+                    phase = "o‘tish";
                 }
             } else {
                 const maxHeroX = sticks.last().x + sticks.last().length + heroWidth;
                 if (heroX > maxHeroX) {
                     heroX = maxHeroX;
-                    phase = "falling";
+                    phase = "yiqilish";
                 }
             }
             break;
-        }
-        case "transitioning": {
+        case "o‘tish":
             sceneOffset += (timestamp - lastTimestamp) / transitioningSpeed;
-            const [nextPlatform] = thePlatformTheStickHits();
-            if (sceneOffset > nextPlatform.x + nextPlatform.w - paddingX) {
+            const [nextPlatformTransition] = thePlatformTheStickHits();
+            if (sceneOffset > nextPlatformTransition.x + nextPlatformTransition.w - paddingX) {
                 sticks.push({
-                    x: nextPlatform.x + nextPlatform.w,
+                    x: nextPlatformTransition.x + nextPlatformTransition.w,
                     length: 0,
                     rotation: 0
                 });
-                phase = "waiting";
+                phase = "kutilmoqda";
             }
             break;
-        }
-        case "falling": {
-            if (sticks.last().rotation < 180)
+        case "yiqilish":
+            if (sticks.last().rotation < 180) {
                 sticks.last().rotation += (timestamp - lastTimestamp) / turningSpeed;
+            }
             heroY += (timestamp - lastTimestamp) / fallingSpeed;
-            const maxHeroY =
-                platformHeight + 100 + (window.innerHeight - canvasHeight) / 2;
+            const maxHeroY = platformHeight + 100 + (window.innerHeight - canvasHeight) / 2;
             if (heroY > maxHeroY) {
-                saveScore(); // Save the score when game ends
+                saveScore();
                 restartButton.style.display = "block";
                 return;
             }
             break;
-        }
         default:
-            throw Error("Wrong phase");
+            throw new Error("Noto‘g‘ri o‘yin bosqichi");
     }
+
     draw();
-    window.requestAnimationFrame(animate);
     lastTimestamp = timestamp;
+    window.requestAnimationFrame(animate);
 }
 
 function thePlatformTheStickHits() {
-    if (sticks.last().rotation != 90)
-        throw Error(`Stick is ${sticks.last().rotation}°`);
+    if (sticks.last().rotation !== 90) {
+        throw new Error(`Tayoqning burilishi ${sticks.last().rotation}°`);
+    }
     const stickFarX = sticks.last().x + sticks.last().length;
     const platformTheStickHits = platforms.find(
         (platform) => platform.x < stickFarX && stickFarX < platform.x + platform.w
     );
     if (
         platformTheStickHits &&
-        platformTheStickHits.x + platformTheStickHits.w / 2 - perfectAreaSize / 2 <
-        stickFarX &&
-        stickFarX <
-        platformTheStickHits.x + platformTheStickHits.w / 2 + perfectAreaSize / 2
-    )
+        platformTheStickHits.x + platformTheStickHits.w / 2 - perfectAreaSize / 2 < stickFarX &&
+        stickFarX < platformTheStickHits.x + platformTheStickHits.w / 2 + perfectAreaSize / 2
+    ) {
         return [platformTheStickHits, true];
+    }
     return [platformTheStickHits, false];
 }
 
@@ -300,12 +372,6 @@ function draw() {
     drawSticks();
     ctx.restore();
 }
-
-restartButton.addEventListener("click", function (event) {
-    event.preventDefault();
-    resetGame();
-    restartButton.style.display = "none";
-});
 
 function drawPlatforms() {
     platforms.forEach(({ x, w }) => {
@@ -335,13 +401,7 @@ function drawHero() {
         heroX - heroWidth / 2,
         heroY + canvasHeight - platformHeight - heroHeight / 2
     );
-    drawRoundedRect(
-        -heroWidth / 2,
-        -heroHeight / 2,
-        heroWidth,
-        heroHeight - 4,
-        5
-    );
+    drawRoundedRect(-heroWidth / 2, -heroHeight / 2, heroWidth, heroHeight - 4, 5);
     const legDistance = 5;
     ctx.beginPath();
     ctx.arc(legDistance, 11.5, 3, 0, Math.PI * 2, false);
@@ -397,7 +457,7 @@ function drawSticks() {
 }
 
 function drawBackground() {
-    var gradient = ctx.createLinearGradient(0, 0, 0, window.innerHeight);
+    const gradient = ctx.createLinearGradient(0, 0, 0, window.innerHeight);
     gradient.addColorStop(0, "#BBD691");
     gradient.addColorStop(1, "#FEF1E1");
     ctx.fillStyle = gradient;
@@ -447,14 +507,20 @@ function drawTree(x, color) {
 
 function getHillY(windowX, baseHeight, amplitude, stretch) {
     const sineBaseY = window.innerHeight - baseHeight;
-    return (
-        Math.sinus((sceneOffset * backgroundSpeedMultiplier + windowX) * stretch) *
-        amplitude +
-        sineBaseY
-    );
+    return Math.sinus((sceneOffset * backgroundSpeedMultiplier + windowX) * stretch) * amplitude + sineBaseY;
 }
 
 function getTreeY(x, baseHeight, amplitude) {
     const sineBaseY = window.innerHeight - baseHeight;
     return Math.sinus(x) * amplitude + sineBaseY;
 }
+
+function goHome() {
+    if (confirm("Bosh sahifaga o‘tishni xohlaysizmi?")) {
+        const path = location.pathname.replace(/\/[^\/]*$/, '/');
+        location.href = path;
+    }
+}
+
+resetGame();
+window.requestAnimationFrame(animate);

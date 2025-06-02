@@ -3,7 +3,7 @@ session_start();
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('Location: ./login/');
+    header('Location: ../login/');
     exit;
 }
 
@@ -29,7 +29,7 @@ $games = $db->executeQuery($sql, [$user_id], 'i')->get_result()->fetch_all(MYSQL
 
 echo json_encode([
     'success' => true,
-    'message' => 'Games fetched successfully!',
+    'message' => 'O‘yinlar muvaffaqiyatli olindi!',
     'data' => $games
 ]);
 exit;
