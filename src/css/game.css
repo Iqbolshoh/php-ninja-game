@@ -318,3 +318,15 @@ body {
   background: #ff4d4d;
   color: #fff;
 }
+
+canvas#game {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+button {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 1rem;
+}
