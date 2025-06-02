@@ -178,6 +178,7 @@ function fetchScores() {
 }
 
 leaderboardButton.addEventListener('click', (e) => {
+    e.preventDefault();
     e.stopPropagation();
     scoreModal.style.display = 'flex';
     fetchScores();
@@ -202,12 +203,12 @@ window.addEventListener("keydown", function (event) {
 
 window.addEventListener("mousedown", function (event) {
     const excludedElements = [homeA, timeElement, scoreElement, leaderboardButton];
-
     if (
         phase === "waiting" &&
         !excludedElements.includes(event.target) &&
         !scoreModal.contains(event.target)
     ) {
+        event.preventDefault();
         if (!gameStartTime) {
             gameStartTime = Date.now();
         }
@@ -220,18 +221,19 @@ window.addEventListener("mousedown", function (event) {
 
 window.addEventListener("mouseup", function (event) {
     if (phase === "stretching") {
+        event.preventDefault();
         phase = "turning";
     }
 });
 
-window.addEventListener("resize", function () {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    draw();
-});
-
 window.addEventListener("touchstart", function (event) {
-    if (phase === "waiting" && event.target !== leaderboardButton && !scoreModal.contains(event.target)) {
+    const excludedElements = [homeA, timeElement, scoreElement, leaderboardButton];
+    if (
+        phase === "waiting" &&
+        !excludedElements.includes(event.target) &&
+        !scoreModal.contains(event.target)
+    ) {
+        event.preventDefault();
         if (!gameStartTime) {
             gameStartTime = Date.now();
         }
@@ -244,6 +246,7 @@ window.addEventListener("touchstart", function (event) {
 
 window.addEventListener("touchend", function (event) {
     if (phase === "stretching") {
+        event.preventDefault();
         phase = "turning";
     }
 });
