@@ -20,12 +20,12 @@ define('PASSWORD_PATTERN', '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
-    $response = ['success' => false, 'title' => 'Xato', 'message' => ''];
+    $response = ['success' => false, 'title' => 'Error', 'message' => ''];
 
     $csrf_token = $_POST['csrf_token'] ?? '';
     if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
-        $response['title'] = 'Xavfsizlik xatosi';
-        $response['message'] = 'Noto‘g‘ri CSRF token. Iltimos, qaytadan urinib ko‘ring.';
+        $response['title'] = 'Security Error';
+        $response['message'] = 'Invalid CSRF token. Please try again.';
         echo json_encode($response);
         exit;
     }
@@ -36,56 +36,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm_password = $_POST['confirm_password'] ?? '';
 
     if (empty($name)) {
-        $response['title'] = 'Noto‘g‘ri Ism';
-        $response['message'] = 'Ism kiritilishi shart.';
+        $response['title'] = 'Invalid Name';
+        $response['message'] = 'Name is required.';
         echo json_encode($response);
         exit;
     }
     if (strlen($name) > NAME_MAX_LENGTH) {
-        $response['title'] = 'Noto‘g‘ri Ism';
-        $response['message'] = 'Ism ' . NAME_MAX_LENGTH . ' belgidan oshmasligi kerak.';
+        $response['title'] = 'Invalid Name';
+        $response['message'] = 'Name must not exceed ' . NAME_MAX_LENGTH . ' characters.';
         echo json_encode($response);
         exit;
     }
 
     if (empty($username)) {
-        $response['title'] = 'Noto‘g‘ri Foydalanuvchi nomi';
-        $response['message'] = 'Foydalanuvchi nomi kiritilishi shart.';
+        $response['title'] = 'Invalid Username';
+        $response['message'] = 'Username is required.';
         echo json_encode($response);
         exit;
     }
     if (!preg_match(USERNAME_PATTERN, $username)) {
-        $response['title'] = 'Noto‘g‘ri Foydalanuvchi nomi';
-        $response['message'] = 'Foydalanuvchi nomi 3-30 ta kichik harf, raqam yoki pastki chiziqdan iborat bo‘lishi kerak.';
+        $response['title'] = 'Invalid Username';
+        $response['message'] = 'Username must be 3-30 characters long and contain only lowercase letters, numbers, or underscores.';
         echo json_encode($response);
         exit;
     }
 
     if (empty($password)) {
-        $response['title'] = 'Noto‘g‘ri Parol';
-        $response['message'] = 'Parol kiritilishi shart.';
+        $response['title'] = 'Invalid Password';
+        $response['message'] = 'Password is required.';
         echo json_encode($response);
         exit;
     }
 
     if (strlen($password) < PASSWORD_MIN_LENGTH) {
-        $response['title'] = 'Noto‘g‘ri Parol';
-        $response['message'] = 'Parol kamida ' . PASSWORD_MIN_LENGTH . ' belgidan iborat bo‘lishi kerak.';
+        $response['title'] = 'Invalid Password';
+        $response['message'] = 'Password must be at least ' . PASSWORD_MIN_LENGTH . ' characters long.';
         echo json_encode($response);
         exit;
     }
 
     if ($password !== $confirm_password) {
-        $response['title'] = 'Parollar mos emas';
-        $response['message'] = 'Parollar bir xil emas.';
+        $response['title'] = 'Passwords Do Not Match';
+        $response['message'] = 'Passwords are not the same.';
         echo json_encode($response);
         exit;
     }
 
     $existingUser = $db->select('users', '*', 'username = ?', [$username], 's');
     if (!empty($existingUser)) {
-        $response['title'] = 'Foydalanuvchi nomi band';
-        $response['message'] = 'Bu foydalanuvchi nomi allaqachon ishlatilmoqda. Iltimos, boshqasini tanlang.';
+        $response['title'] = 'Username Taken';
+        $response['message'] = 'This username is already in use. Please choose another.';
         echo json_encode($response);
         exit;
     }
@@ -107,13 +107,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
 
         $response['success'] = true;
-        $response['title'] = 'Muvaffaqiyat';
-        $response['message'] = 'Siz muvaffaqiyatli ro‘yxatdan o‘tdingiz!';
+        $response['title'] = 'Success';
+        $response['message'] = 'You have successfully signed up!';
         echo json_encode($response);
         exit;
     } else {
-        $response['title'] = 'Ma’lumotlar bazasi xatosi';
-        $response['message'] = 'Hisob yaratishda muammo yuz berdi. Iltimos, keyinroq qayta urinib ko‘ring.';
+        $response['title'] = 'Database Error';
+        $response['message'] = 'There was an issue creating the account. Please try again later.';
         echo json_encode($response);
         exit;
     }
@@ -121,12 +121,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ro‘yxatdan o‘tish</title>
+    <title>Sign Up</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -147,25 +147,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="col-md-6 col-lg-4">
                 <div class="card shadow">
                     <div class="card-body p-4">
-                        <h2 class="text-center mb-4">Ro‘yxatdan o‘tish</h2>
+                        <h2 class="text-center mb-4">Sign Up</h2>
                         <form id="signupForm" method="POST">
                             <input type="hidden" name="csrf_token"
                                 value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                             <div class="mb-3">
-                                <label for="name" class="form-label">To‘liq ism</label>
+                                <label for="name" class="form-label">Full Name</label>
                                 <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="To‘liq ismingizni kiriting" maxlength="100">
+                                    placeholder="Enter your full name" maxlength="100">
                             </div>
                             <div class="mb-3">
-                                <label for="username" class="form-label">Foydalanuvchi nomi</label>
+                                <label for="username" class="form-label">Username</label>
                                 <input type="text" class="form-control" id="username" name="username"
-                                    placeholder="Foydalanuvchi nomi tanlang">
+                                    placeholder="Choose a username">
                             </div>
                             <div class="mb-3 position-relative">
-                                <label for="password" class="form-label">Parol</label>
+                                <label for="password" class="form-label">Password</label>
                                 <div class="input-group">
                                     <input type="password" id="password" class="form-control" name="password"
-                                        placeholder="Parol yarating">
+                                        placeholder="Create a password">
                                     <button class="btn btn-outline-secondary password-toggle" type="button"
                                         onclick="togglePassword('password')">
                                         <i class="fas fa-eye"></i>
@@ -173,23 +173,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                             </div>
                             <div class="mb-3 position-relative">
-                                <label for="confirm_password" class="form-label">Parolni tasdiqlang</label>
+                                <label for="confirm_password" class="form-label">Confirm Password</label>
                                 <div class="input-group">
                                     <input type="password" id="confirm_password" class="form-control"
-                                        name="confirm_password" placeholder="Parolni qaytadan kiriting">
+                                        name="confirm_password" placeholder="Re-enter password">
                                     <button class="btn btn-outline-secondary password-toggle" type="button"
                                         onclick="togglePassword('confirm_password')">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Ro'yxatdan o'tish</button>
+                            <button type="submit" class="btn btn-primary w-100">Sign Up</button>
                         </form>
                         <?php
                         $redirect_url = isset($_GET['redirect_url']) ? '?redirect_url=' . urlencode($_GET['redirect_url']) : '';
                         ?>
                         <p class="text-center mt-3">
-                            Hisobingiz bormi? <a href="../login/<?php echo $redirect_url; ?>">Kirish</a>
+                            Already have an account? <a href="../login/<?php echo $redirect_url; ?>">Login</a>
                         </p>
                     </div>
                 </div>
@@ -239,11 +239,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         title: result.title,
                         text: result.message
                     });
-                    if (result.title.includes('Ism')) {
+                    if (result.title.includes('Name')) {
                         document.getElementById('name').classList.add('error-input');
-                    } else if (result.title.includes('Foydalanuvchi')) {
+                    } else if (result.title.includes('Username')) {
                         document.getElementById('username').classList.add('error-input');
-                    } else if (result.title.includes('Parol')) {
+                    } else if (result.title.includes('Password')) {
                         document.getElementById('password').classList.add('error-input');
                         document.getElementById('confirm_password').classList.add('error-input');
                     } else if (result.title.includes('CSRF')) {
@@ -253,8 +253,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } catch (error) {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Tarmoq xatosi',
-                    text: 'Serverga ulanishda muammo yuz berdi.'
+                    title: 'Network Error',
+                    text: 'There was a problem connecting to the server.'
                 });
                 console.error('Fetch error:', error);
             }
