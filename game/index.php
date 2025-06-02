@@ -19,14 +19,21 @@ $game_id = $game[0]['id'];
 ?>
 
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Custom Game Styles -->
     <link rel="stylesheet" href="../src/css/game.css" />
+
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
     <title>Black Ninja</title>
+
+    <!-- Pass PHP data to JavaScript -->
     <script>
         const game_id = <?= json_encode($game_id); ?>;
         const myUsername = <?= json_encode($_SESSION['user']['username']); ?>;
@@ -35,21 +42,25 @@ $game_id = $game[0]['id'];
 
 <body>
     <div class="container">
-        <button class="leaderboard-button" id="leaderboard-button">Barcha ballar</button>
-        <button class="home-a" id="home-a" onclick="goHome()">Bosh sahifa</button>
+        <!-- Leaderboard Button -->
+        <button class="leaderboard-button" id="leaderboard-button">All Scores</button>
 
+        <!-- Go Home Button -->
+        <button class="home-a" id="home-a" onclick="goHome()">Home</button>
+
+        <!-- Score Modal -->
         <div class="score-modal" id="score-modal">
             <div class="score-modal-content">
                 <button class="close-modal" id="close-modal">×</button>
-                <h2>Reyting jadvali</h2>
+                <h2>Leaderboard</h2>
                 <table class="score-table">
                     <thead>
                         <tr>
-                            <th>№</th>
-                            <th>Ism</th>
-                            <th>Foydalanuvchi nomi</th>
-                            <th>Ball</th>
-                            <th>Vaqt (s)</th>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Score</th>
+                            <th>Time (s)</th>
                         </tr>
                     </thead>
                     <tbody id="score-table-body"></tbody>
@@ -57,18 +68,24 @@ $game_id = $game[0]['id'];
             </div>
         </div>
 
+        <!-- Game Results -->
         <div class="result">
             <div id="score"></div>
             <div id="time"></div>
         </div>
 
+        <!-- Game Canvas -->
         <canvas id="game" width="375" height="375"></canvas>
 
-        <div id="introduction">Tayoqni cho‘zish uchun sichqoncha tugmasini bosib turing</div>
-        <div id="perfect">Ajoyib!</div>
-        <button id="restart">QAYTA BOSHLASH</button>
+        <!-- Game Messages -->
+        <div id="introduction">Hold down the mouse button to extend the stick</div>
+        <div id="perfect">Perfect!</div>
+
+        <!-- Restart Button -->
+        <button id="restart">RESTART</button>
     </div>
 
+    <!-- Game Logic -->
     <script src="../src/js/game.js"></script>
 </body>
 
