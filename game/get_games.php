@@ -29,7 +29,7 @@ $games = $db->executeQuery($sql, [$user_id], 'i')->get_result()->fetch_all(MYSQL
 
 echo json_encode([
     'success' => true,
-    'message' => 'O‘yinlar muvaffaqiyatli olindi!',
+    'message' => 'Games retrieved successfully!',
     'data' => $games
 ]);
 exit;
