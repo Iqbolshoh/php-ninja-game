@@ -13,7 +13,7 @@ $db = new Database();
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode([
         'success' => false,
-        'message' => 'Faqat POST usuli ruxsat etiladi'
+        'message' => 'Only POST method is allowed'
     ]);
     exit;
 }
@@ -24,7 +24,7 @@ $score = (int) ($_POST['score'] ?? 0);
 $played_seconds = (int) ($_POST['played_seconds'] ?? 0);
 
 if (!$game_id || !$user_id) {
-    exit(json_encode(['success' => false, 'message' => 'Maʼlumotlar noto‘g‘ri']));
+    exit(json_encode(['success' => false, 'message' => 'Invalid data provided']));
 }
 
 $existing = $db->select('game_records', '*', 'game_id = ? AND user_id = ?', [$game_id, $user_id], 'ii');
@@ -38,24 +38,24 @@ if (!$existing) {
     ]);
 
     if ($inserted) {
-        echo json_encode(['success' => true, 'message' => 'O‘yin muvaffaqiyatli yaratildi']);
+        echo json_encode(['success' => true, 'message' => 'Game successfully created']);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Qo‘shish amalga oshmadi']);
+        echo json_encode(['success' => false, 'message' => 'Failed to create game record']);
     }
 } else {
     $old = $existing[0];
-    if ($score > $old['score'] || $score >= $old['score'] && $played_seconds < $old['played_seconds']) {
+    if ($score > $old['score'] || ($score >= $old['score'] && $played_seconds < $old['played_seconds'])) {
         $updated = $db->update('game_records', [
             'score' => $score,
             'played_seconds' => $played_seconds
         ], 'id = ?', [$old['id']], 'i');
 
         if ($updated) {
-            echo json_encode(['success' => true, 'message' => 'O‘yin yangilandi']);
+            echo json_encode(['success' => true, 'message' => 'Game record updated successfully']);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Yangilash amalga oshmadi']);
+            echo json_encode(['success' => false, 'message' => 'Failed to update game record']);
         }
     } else {
-        echo json_encode(['success' => true, 'message' => 'Yangilash kerak emas']);
+        echo json_encode(['success' => true, 'message' => 'No update needed']);
     }
 }
